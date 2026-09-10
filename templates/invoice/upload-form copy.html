@@ -1,0 +1,59 @@
+{% extends "index.html" %}
+{% block content %}
+<section id="view-formularios" class="view-panel">
+                <div class="subhead-toolbar">
+                    <div class="subhead-title">Nueva Compra / Registro de Formulario</div>
+                </div>
+                
+                <div class="form-container">
+                    <div class="card">
+                        <div class="card-title">Cargar Factura</div>
+                        <form onsubmit="event.preventDefault();">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Código de Factura <span class="required">*</span></label>
+                                    <input type="file" class="form-control" value="SER-FV9851" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Tipo de Pago</label>
+                                    <select class="form-control form-select">
+                                        <option>Contado</option>
+                                        <option>Crédito 30 Días</option>
+                                        <option>Transferencia / QR</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Cliente <span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Buscar o ingresar cliente..." value="CLIENTE MOSTRADOR">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Monto Total ($)</label>
+                                    <input type="number" class="form-control" placeholder="0.00" value="150000">
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label class="form-label">Observaciones</label>
+                                    <textarea class="form-control" placeholder="Escribe detalles adicionales de la transacción..."></textarea>
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label class="form-check">
+                                        <input type="checkbox" checked>
+                                        <span>Generar comprobante electrónico automáticamente</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-primary">Guardar Registro</button>
+                                <button type="button" class="btn btn-secondary">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+{% endblock %}

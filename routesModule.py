@@ -5,3 +5,7 @@ def register_routes(app):
     @app.route('/')
     def index():
         return render_template('index.html', name="Hola")
+
+    @app.route('/invoice/upload')
+    def invoice_upload():
+        return render_template('invoice/upload-form.html', name="Hola")
