@@ -1,67 +1,129 @@
 {% extends "index.html" %}
 {% block content %}
 <section id="view-formularios" class="view-panel">
-                <div class="subhead-toolbar">
-                    <div class="subhead-title">Nueva Compra / Registro de Formulario</div>
-                </div>
-                
-                <div class="form-container">
-                    <div class="card">
-                        <div class="card-title">Cargar Factura</div>
-                        <form id="invoice-upload-form" action="{{ url_for('upload_invoice') }}" method="post" enctype="multipart/form-data">
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label class="form-label">Código de Factura <span class="required">*</span></label>
-                                    <input type="file" name="file" class="form-control" required>
-                                </div>
-                            </div>
-                            <div class="btn-group">
-                                <button type="submit" class="btn btn-primary">Cargar Factura</button>
-                                <button type="button" class="btn btn-secondary">Cancelar</button>
-                            </div>
-                            <p id="upload-status" role="status" aria-live="polite"></p>
-                        </form>
+    <div class="subhead-toolbar">
+        <div class="subhead-title">Nueva Compra / Registro de Formulario</div>
+    </div>
+
+    <div class="form-container">
+        <div class="card">
+            <div class="card-title">Cargar Factura</div>
+            <form id="invoice-upload-form" action="{{ url_for('upload_invoice') }}" method="post"
+                enctype="multipart/form-data">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Código de Factura <span class="required">*</span></label>
+                        <input type="file" name="file" class="form-control" required>
                     </div>
                 </div>
-            </section>
-            <script>
-                const uploadForm = document.getElementById('invoice-upload-form');
-                const uploadStatus = document.getElementById('upload-status');
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">Cargar Factura</button>
+                    <button type="button" class="btn btn-secondary">Cancelar</button>
+                </div>
+                <p id="upload-status" role="status" aria-live="polite"></p>
+            </form>
+        </div>
+        <div class="card">
+            <div class="card-title">Informacion Factura Compra</div>
+            <form onsubmit="event.preventDefault();">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">ID Factura <span class="required">*</span></label>
+                        <input type="text" class="form-control" value="" name="id-invoice" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"># Factura<span class="required">*</span></label>
+                        <input type="text" class="form-control" value="" name="numero-invoice" required>
+                    </div>
 
-                uploadForm.addEventListener('submit', async (event) => {
-                    event.preventDefault();
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Pago</label>
+                        <input type="text" class="form-control" value="" name="type-invoice" required>
+                    </div>
 
-                    const submitButton = uploadForm.querySelector('button[type="submit"]');
-                    const formData = new FormData(uploadForm);
+                    <div class="form-group">
+                        <label class="form-label">Fecha Factura</label>
+                        <input type="text" class="form-control" value="" name="type-invoice" required>
+                    </div>
 
-                    submitButton.disabled = true;
-                    uploadStatus.textContent = 'Procesando factura...';
+                    <div class="form-group full-width">
+                        <label class="form-label ">Cliente <span class="required">*</span></label>
+                        <input type="text" class="form-control" placeholder="Buscar o ingresar cliente..." value="">
+                    </div>
+                </div>
 
-                    try {
-                        const response = await fetch(uploadForm.action, {
-                            method: 'POST',
-                            body: formData,
-                        });
-                        const result = await response.json();
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary">Consultar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Registro</button>
+                </div>
+            </form>
 
-                        if (!response.ok) {
-                            throw new Error(result.details || result.error || 'No se pudo cargar la factura.');
-                        }
-                        uploadStatus.textContent = `Factura procesada: ${result.filename}`;
-                        processInvoiceData(result.data);
-                        uploadForm.reset();
-                    } catch (error) {
-                        uploadStatus.textContent = `Error: ${error.message}`;
-                    } finally {
-                        submitButton.disabled = false;
-                    }
-                });
+        </div>
+        <div class="card">
+            <div class="card-title">Items Factura Compra</div>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Id</th>
+                            <th style="width: 140px;">Codigo</th>
+                            <th>Descripcion</th>
+                            <th style="text-align: right; width: 180px;">Marca</th>
+                            <th style="text-align: right; width: 180px;">Cant</th>
+                            <th style="text-align: right; width: 180px;">Costo</th>
+                            <th class="col-action"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
-                function processInvoiceData(data) {
-                    // Aquí puedes manejar los datos extraídos de la factura
-                    console.log('Datos extraídos de la factura:', data);
-                }
-            </script>
+                    </tbody>
+                </table>
+            </div>
+            <div class="btn-group">
+                    <button type="button" class="btn btn-secondary">Imprimir</button>
+                    <button type="submit" class="btn btn-primary">Guardar Registros</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+    const uploadForm = document.getElementById('invoice-upload-form');
+    const uploadStatus = document.getElementById('upload-status');
+
+    uploadForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const submitButton = uploadForm.querySelector('button[type="submit"]');
+        const formData = new FormData(uploadForm);
+
+        submitButton.disabled = true;
+        uploadStatus.textContent = 'Procesando factura...';
+
+        try {
+            const response = await fetch(uploadForm.action, {
+                method: 'POST',
+                body: formData,
+            });
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.details || result.error || 'No se pudo cargar la factura.');
+            }
+            uploadStatus.textContent = `Factura procesada: ${result.filename}`;
+            processInvoiceData(result.data);
+            uploadForm.reset();
+        } catch (error) {
+            uploadStatus.textContent = `Error: ${error.message}`;
+        } finally {
+            submitButton.disabled = false;
+        }
+    });
+
+    function processInvoiceData(data) {
+        // Aquí puedes manejar los datos extraídos de la factura
+        console.log('Datos extraídos de la factura:', data);
+    }
+</script>
 {% endblock %}
-
-

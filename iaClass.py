@@ -62,7 +62,9 @@ Estructura del JSON a retornar:
 }
 """
     def __init__(self, api_key: Optional[str] = None):
-        self.api_key = api_key or os.getenv("GENAI_API_KEY")
+        self.api_key = api_key or os.getenv(""
+        ""
+        "")
         if not self.api_key:
             raise ValueError("API key is required. Please set the GENAI_API_KEY environment variable or provide it as an argument.")
         self.client = genai.Client(api_key=self.api_key)
