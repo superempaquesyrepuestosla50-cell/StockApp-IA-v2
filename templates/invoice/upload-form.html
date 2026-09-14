@@ -33,22 +33,22 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label"># Factura<span class="required">*</span></label>
-                        <input type="text" class="form-control" value="" name="numero-invoice" required>
+                        <input type="text" class="form-control" value="" name="number-invoice" id="number-invoice" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Tipo de Pago</label>
-                        <input type="text" class="form-control" value="" name="type-invoice" required>
+                        <input type="text" class="form-control" value="" name="type-invoice" id="type-invoice"" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Fecha Factura</label>
-                        <input type="text" class="form-control" value="" name="type-invoice" required>
+                        <input type="text" class="form-control" value="" name="date-invoice" id="date-invoice" required>
                     </div>
 
                     <div class="form-group full-width">
-                        <label class="form-label ">Cliente <span class="required">*</span></label>
-                        <input type="text" class="form-control" placeholder="Buscar o ingresar cliente..." value="">
+                        <label class="form-label ">Proveedor <span class="required">*</span></label>
+                        <input type="text" class="form-control" placeholder="Buscar o ingresar cliente..." value="" id="name-supplier">
                     </div>
                 </div>
 
@@ -74,7 +74,7 @@
                             <th class="col-action"></th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="body-table-items">
 
                     </tbody>
                 </table>
@@ -122,8 +122,76 @@
     });
 
     function processInvoiceData(data) {
+
+        if("data_invoice" in data){
+
+        const dataInvoice = data["data_invoice"];
+        const itemsInvoice = data["items"];
+        const factura = dataInvoice["factura"];
+        const proveedor = dataInvoice["proveedor"];
+        const totales = dataInvoice["totales"];
+
+        const nameSupplier = document.getElementById("name-supplier");
+        const dateInvoice = document.getElementById("date-invoice");
+        const numberInvoice = document.getElementById("number-invoice");
+        const tableItems = document.getElementById("body-table-items");
+
+        numberInvoice.value = factura["numero_factura"];
+        dateInvoice.value = factura["fecha_emision"];
+        nameSupplier.value = proveedor["nombre"];
+
+        itemsInvoice.forEach(element => {
+
+            console.log(element);
+
+            row = document.createElement("tr");
+            row.classList.add("data-row");
+
+            colId = document.createElement("td");
+            colCodigo = document.createElement("td");
+            colDescripcion = document.createElement("td");
+            colMarca = document.createElement("td");
+            colCant = document.createElement("td");
+            colCosto = document.createElement("td");
+            col = document.createElement("td");
+
+            colCodigo.textContent = element.codigo
+            colDescripcion.textContent = element.descripcion
+            colCant.textContent = element.cantidad
+            colCosto.textContent = element.precio_unitario
+            /*
+            colIdInput = document.createElement("input");
+            colCodigoInput = document.createElement("input");
+            colDescripcionInput = document.createElement("input");
+            colMarcaInput = document.createElement("input");
+            colCantInput = document.createElement("input");
+            colCostoInput = document.createElement("input");
+
+            colId.appendChild(colIdInput);
+            colCodigo.appendChild(colCodigoInput);
+            colDescripcion.appendChild(colDescripcionInput);
+            colMarca.appendChild(colMarcaInput);
+            colCant.appendChild(colCantInput);
+            colCosto.appendChild(colCostoInput);
+            */
+            row.appendChild(colId);
+            row.appendChild(colCodigo);
+            row.appendChild(colDescripcion);
+            row.appendChild(colMarca);
+            row.appendChild(colCant);
+            row.appendChild(colCosto);
+
+            tableItems.appendChild(row)
+        });
+          // console.log('Datos extraídos de la factura:', dataInvoice);
+
+        }
+
+        console.log(data)
         // Aquí puedes manejar los datos extraídos de la factura
-        console.log('Datos extraídos de la factura:', data);
+      
+    
+     
     }
 </script>
 {% endblock %}
