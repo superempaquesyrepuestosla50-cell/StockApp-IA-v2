@@ -8,12 +8,11 @@
     <div class="form-container">
         <div class="card">
             <div class="card-title">Cargar Factura</div>
-            <form id="invoice-upload-form" action="{{ url_for('upload_invoice') }}" method="post"
-                enctype="multipart/form-data">
+            <form id="invoice-upload-form" action="{{ url_for('demos') }}" method="post" enctype="multipart/form-data">
                 <div class="form-grid">
                     <div class="form-group">
                         <label class="form-label">Código de Factura <span class="required">*</span></label>
-                        <input type="file" name="file" class="form-control" required>
+                        <input type="file" name="file" class="form-control">
                     </div>
                 </div>
                 <div class="btn-group">
@@ -33,7 +32,8 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label"># Factura<span class="required">*</span></label>
-                        <input type="text" class="form-control" value="" name="number-invoice" id="number-invoice" required>
+                        <input type="text" class="form-control" value="" name="number-invoice" id="number-invoice"
+                            required>
                     </div>
 
                     <div class="form-group">
@@ -41,14 +41,15 @@
                         <input type="text" class="form-control" value="" name="type-invoice" id="type-invoice"" required>
                     </div>
 
-                    <div class="form-group">
+                    <div class=" form-group">
                         <label class="form-label">Fecha Factura</label>
                         <input type="text" class="form-control" value="" name="date-invoice" id="date-invoice" required>
                     </div>
 
                     <div class="form-group full-width">
                         <label class="form-label ">Proveedor <span class="required">*</span></label>
-                        <input type="text" class="form-control" placeholder="Buscar o ingresar cliente..." value="" id="name-supplier">
+                        <input type="text" class="form-control" placeholder="Buscar o ingresar cliente..." value=""
+                            id="name-supplier">
                     </div>
                 </div>
 
@@ -71,7 +72,7 @@
                             <th style="text-align: right; width: 180px;">Marca</th>
                             <th style="text-align: right; width: 180px;">Cant</th>
                             <th style="text-align: right; width: 180px;">Costo</th>
-                            <th class="col-action"></th>
+                            <th style="text-align: right; width: 100px;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="body-table-items">
@@ -80,12 +81,82 @@
                 </table>
             </div>
             <div class="btn-group">
-                    <button type="button" class="btn btn-secondary">Imprimir</button>
-                    <button type="submit" class="btn btn-primary">Guardar Registros</button>
+                <button type="button" class="btn btn-secondary">Imprimir</button>
+                <button type="submit" class="btn btn-primary">Guardar Registros</button>
             </div>
         </div>
     </div>
 </section>
+
+<div id="editModal" class="modal-overlay" onclick="closeModalOnOverlay(event)">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title" id="modalTitle">Editar Registro</div>
+            <button class="modal-close" onclick="closeModal()" title="Cerrar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+            </button>
+        </div>
+        <form onsubmit="saveModalData(event)">
+            <div class="modal-body">
+                <div class="form-grid" style="grid-template-columns: 1fr; gap: 14px; margin-bottom: 0;">
+                    <div class="form-group">
+                        <label class="form-label">Id</label>
+                        <input type="text" id="modalId" class="form-control" readonly
+                            style="background-color: var(--bg-subtle);">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Código</label>
+                        <input type="text" id="modalCode" class="form-control" readonly
+                            style="background-color: var(--bg-subtle);">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Pago</label>
+                        <select id="modalType" class="form-control form-select">
+                            <option value="Contado">Contado</option>
+                            <option value="Crédito 30 Días">Crédito 30 Días</option>
+                            <option value="Transferencia / QR">Transferencia / QR</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Descripción<span class="required">*</span></label>
+                        <input type="text" id="modalDescripcion" class="form-control" required>
+                    </div>
+                     <div class="form-group">
+                        <label class="form-label">Marca<span class="required">*</span></label>
+                        <input type="text" id="modalMarca" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cantidad <span class="required">*</span></label>
+                        <input type="number" id="modalCant" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Costo ($) <span class="required">*</span></label>
+                        <input type="number" id="modalCosto" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Valor 1 ($) <span class="required">*</span></label>
+                        <input type="number" id="modalValor1" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Valor 2 ($) <span class="required">*</span></label>
+                        <input type="number" id="modalValor2" class="form-control" required>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
 
 
 <script>
@@ -123,75 +194,119 @@
 
     function processInvoiceData(data) {
 
-        if("data_invoice" in data){
+        if ("data_invoice" in data) {
+            const dataInvoice = data["data_invoice"];
+            const itemsInvoice = data["items"];
+            const factura = dataInvoice["factura"];
+            const proveedor = dataInvoice["proveedor"];
+            const totales = dataInvoice["totales"];
 
-        const dataInvoice = data["data_invoice"];
-        const itemsInvoice = data["items"];
-        const factura = dataInvoice["factura"];
-        const proveedor = dataInvoice["proveedor"];
-        const totales = dataInvoice["totales"];
+            const nameSupplier = document.getElementById("name-supplier");
+            const dateInvoice = document.getElementById("date-invoice");
+            const numberInvoice = document.getElementById("number-invoice");
+            const tableItems = document.getElementById("body-table-items");
 
-        const nameSupplier = document.getElementById("name-supplier");
-        const dateInvoice = document.getElementById("date-invoice");
-        const numberInvoice = document.getElementById("number-invoice");
-        const tableItems = document.getElementById("body-table-items");
+            numberInvoice.value = factura["numero_factura"];
+            dateInvoice.value = factura["fecha_emision"];
+            nameSupplier.value = proveedor["nombre"];
 
-        numberInvoice.value = factura["numero_factura"];
-        dateInvoice.value = factura["fecha_emision"];
-        nameSupplier.value = proveedor["nombre"];
+            itemsInvoice.forEach(element => {
+                row = document.createElement("tr");
+                row.classList.add("data-row");
 
-        itemsInvoice.forEach(element => {
+                colId = document.createElement("td");
+                colCodigo = document.createElement("td");
+                colDescripcion = document.createElement("td");
+                colMarca = document.createElement("td");
+                colCant = document.createElement("td");
+                colCosto = document.createElement("td");
+                colAction = document.createElement("td");
 
-            console.log(element);
+                colAction.innerHTML = `<button class="btn-edit-table" onclick="openEditModal('SER-FV9846', 'Contado', 'CLIENTE MOSTRADOR', '145000', this)">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                                        <span>Editar</span>
+                                    </button>`
+                /*
+                botonAction = document.createElement("button");
+                botonAction.classList.add("btn-edit-table");
+                botonAction.innerHTML = "<svg width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z'/></svg><span>Editar</span>";
+                botonAction.setAttribute("onclick",`openEditModal("${element.codigo}","${element.codigo}","${element.codigo}","${element.codigo}","${this}")`)
+                */
+                colCodigo.textContent = element.codigo
+                colDescripcion.textContent = element.descripcion
+                colCant.textContent = element.cantidad
+                colCosto.textContent = element.precio_unitario
 
-            row = document.createElement("tr");
-            row.classList.add("data-row");
+                //colAction.appendChild(botonAction);
+                row.appendChild(colId);
+                row.appendChild(colCodigo);
+                row.appendChild(colDescripcion);
+                row.appendChild(colMarca);
+                row.appendChild(colCant);
+                row.appendChild(colCosto);
+                row.appendChild(colAction);
 
-            colId = document.createElement("td");
-            colCodigo = document.createElement("td");
-            colDescripcion = document.createElement("td");
-            colMarca = document.createElement("td");
-            colCant = document.createElement("td");
-            colCosto = document.createElement("td");
-            col = document.createElement("td");
-
-            colCodigo.textContent = element.codigo
-            colDescripcion.textContent = element.descripcion
-            colCant.textContent = element.cantidad
-            colCosto.textContent = element.precio_unitario
-            /*
-            colIdInput = document.createElement("input");
-            colCodigoInput = document.createElement("input");
-            colDescripcionInput = document.createElement("input");
-            colMarcaInput = document.createElement("input");
-            colCantInput = document.createElement("input");
-            colCostoInput = document.createElement("input");
-
-            colId.appendChild(colIdInput);
-            colCodigo.appendChild(colCodigoInput);
-            colDescripcion.appendChild(colDescripcionInput);
-            colMarca.appendChild(colMarcaInput);
-            colCant.appendChild(colCantInput);
-            colCosto.appendChild(colCostoInput);
-            */
-            row.appendChild(colId);
-            row.appendChild(colCodigo);
-            row.appendChild(colDescripcion);
-            row.appendChild(colMarca);
-            row.appendChild(colCant);
-            row.appendChild(colCosto);
-
-            tableItems.appendChild(row)
-        });
-          // console.log('Datos extraídos de la factura:', dataInvoice);
+                tableItems.appendChild(row)
+            });
+            // console.log('Datos extraídos de la factura:', dataInvoice);
 
         }
 
-        console.log(data)
-        // Aquí puedes manejar los datos extraídos de la factura
-      
-    
-     
+        //console.log(data)
+        // Aquí puedes manejar los datos extraídos de la factura     
     }
+    
+    function openEditModal(code, type, client, total, button) {
+       
+        document.getElementById('modalCode').value = code;
+        document.getElementById('modalDescripcion').value = client;
+        document.getElementById('modalMarca').value = total;
+        document.getElementById('modalCant').value = total;
+        document.getElementById('modalCosto').value = total;
+        document.getElementById('modalTitle').innerText = 'Editar Venta (' + code + ')';
+
+        if (button) {
+            console.log(button)
+
+        }
+        document.getElementById('editModal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('editModal').classList.remove('active');
+    }
+
+    function closeModalOnOverlay(e) {
+        if (e.target.id === 'editModal') {
+            closeModal();
+        }
+    }
+
+    function saveModalData(e) {
+        e.preventDefault();
+        const code = document.getElementById('modalCode').value;
+        const type = document.getElementById('modalType').value;
+        const client = document.getElementById('modalClient').value;
+        const total = parseFloat(document.getElementById('modalTotal').value) || 0;
+
+        if (activeRowElement) {
+            const cells = activeRowElement.querySelectorAll('td');
+            if (cells.length >= 4) {
+                cells[0].innerText = code;
+                cells[1].innerText = type;
+                cells[2].innerText = client;
+
+                // Formato de moneda para visualización
+                const formattedTotal = '$ ' + total.toLocaleString('es-CO', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+                cells[3].innerText = formattedTotal;
+            }
+        }
+
+        closeModal();
+    }
+
 </script>
 {% endblock %}
