@@ -72,6 +72,8 @@
                             <th style="text-align: right; width: 180px;">Marca</th>
                             <th style="text-align: right; width: 180px;">Cant</th>
                             <th style="text-align: right; width: 180px;">Costo</th>
+                            <th style="text-align: right; width: 180px;">Val 1</th>
+                            <th style="text-align: right; width: 180px;">Val 2</th>
                             <th style="text-align: right; width: 100px;">Acciones</th>
                         </tr>
                     </thead>
@@ -113,6 +115,7 @@
                         <input type="text" id="modalCode" class="form-control" readonly
                             style="background-color: var(--bg-subtle);">
                     </div>
+                    <!--
                     <div class="form-group">
                         <label class="form-label">Tipo de Pago</label>
                         <select id="modalType" class="form-control form-select">
@@ -120,14 +123,14 @@
                             <option value="Crédito 30 Días">Crédito 30 Días</option>
                             <option value="Transferencia / QR">Transferencia / QR</option>
                         </select>
-                    </div>
+                    </div>-->
                     <div class="form-group">
                         <label class="form-label">Descripción<span class="required">*</span></label>
                         <input type="text" id="modalDescripcion" class="form-control" required>
                     </div>
                      <div class="form-group">
                         <label class="form-label">Marca<span class="required">*</span></label>
-                        <input type="text" id="modalMarca" class="form-control" required>
+                        <input type="text" id="modalMarca" class="form-control">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Cantidad <span class="required">*</span></label>
@@ -219,31 +222,32 @@
                 colDescripcion = document.createElement("td");
                 colMarca = document.createElement("td");
                 colCant = document.createElement("td");
+                colVal1 = document.createElement("td");
+                colVal2 = document.createElement("td");
                 colCosto = document.createElement("td");
                 colAction = document.createElement("td");
-
-                colAction.innerHTML = `<button class="btn-edit-table" onclick="openEditModal('SER-FV9846', 'Contado', 'CLIENTE MOSTRADOR', '145000', this)">
+                colCant.style.textAlign = "right";
+                colCosto.style.textAlign = "right";
+                colVal1.style.textAlign = "right";
+                colVal2.style.textAlign = "right";
+                colAction.innerHTML = `<button class="btn-edit-table" onclick="openEditModal('${element.codigo}', '${element.descripcion}', '${element.cantidad}', '${element.precio_unitario}', this)">
                                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
                                         <span>Editar</span>
                                     </button>`
-                /*
-                botonAction = document.createElement("button");
-                botonAction.classList.add("btn-edit-table");
-                botonAction.innerHTML = "<svg width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z'/></svg><span>Editar</span>";
-                botonAction.setAttribute("onclick",`openEditModal("${element.codigo}","${element.codigo}","${element.codigo}","${element.codigo}","${this}")`)
-                */
+
                 colCodigo.textContent = element.codigo
                 colDescripcion.textContent = element.descripcion
                 colCant.textContent = element.cantidad
                 colCosto.textContent = element.precio_unitario
 
-                //colAction.appendChild(botonAction);
                 row.appendChild(colId);
                 row.appendChild(colCodigo);
                 row.appendChild(colDescripcion);
                 row.appendChild(colMarca);
                 row.appendChild(colCant);
                 row.appendChild(colCosto);
+                row.appendChild(colVal1);
+                row.appendChild(colVal2);
                 row.appendChild(colAction);
 
                 tableItems.appendChild(row)
@@ -251,22 +255,20 @@
             // console.log('Datos extraídos de la factura:', dataInvoice);
 
         }
-
-        //console.log(data)
-        // Aquí puedes manejar los datos extraídos de la factura     
     }
     
-    function openEditModal(code, type, client, total, button) {
+    function openEditModal(code, descripcion, cant, costo, button) {
        
         document.getElementById('modalCode').value = code;
-        document.getElementById('modalDescripcion').value = client;
-        document.getElementById('modalMarca').value = total;
-        document.getElementById('modalCant').value = total;
-        document.getElementById('modalCosto').value = total;
+        document.getElementById('modalDescripcion').value = descripcion;
+        document.getElementById('modalMarca').value = "";
+        document.getElementById('modalCant').value = cant;
+        document.getElementById('modalCosto').value = costo;
         document.getElementById('modalTitle').innerText = 'Editar Venta (' + code + ')';
 
         if (button) {
-            console.log(button)
+            activeRowElement = button.parentElement.parentElement
+            console.log(activeRowElement);
 
         }
         document.getElementById('editModal').classList.add('active');
@@ -284,24 +286,34 @@
 
     function saveModalData(e) {
         e.preventDefault();
+        
+        const id = document.getElementById('modalId').value;
         const code = document.getElementById('modalCode').value;
-        const type = document.getElementById('modalType').value;
-        const client = document.getElementById('modalClient').value;
-        const total = parseFloat(document.getElementById('modalTotal').value) || 0;
+        const descripcion = document.getElementById('modalDescripcion').value;
+        const marca = document.getElementById('modalMarca').value;
+        const cant = parseFloat(document.getElementById('modalCant').value) || 0;
+        const costo = parseFloat(document.getElementById('modalCosto').value) || 0;
+        const valor1 = parseFloat(document.getElementById('modalValor1').value) || 0;
+        const valor2 = parseFloat(document.getElementById('modalValor2').value) || 0;
 
         if (activeRowElement) {
             const cells = activeRowElement.querySelectorAll('td');
             if (cells.length >= 4) {
-                cells[0].innerText = code;
-                cells[1].innerText = type;
-                cells[2].innerText = client;
+                cells[0].innerText = id;
+                cells[1].innerText = code;
+                cells[2].innerText = descripcion;
+                cells[3].innerText = marca;
+                cells[4].innerText = cant;
+                cells[5].innerText = costo;
+                cells[6].innerText = valor1;
+                cells[7].innerText = valor2;
 
                 // Formato de moneda para visualización
-                const formattedTotal = '$ ' + total.toLocaleString('es-CO', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-                cells[3].innerText = formattedTotal;
+                //const formattedTotal = '$ ' + total.toLocaleString('es-CO', {
+                //    minimumFractionDigits: 2,
+                //    maximumFractionDigits: 2
+                //});
+               // cells[3].innerText = formattedTotal;
             }
         }
 
