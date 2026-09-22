@@ -129,6 +129,7 @@ p {
     --font-size-base: 0.925rem;
     --font-size-lg: 1.125rem;
     --font-size-xl: 1.25rem;
+    --font-size-tiny: 0.55rem;
 
     /* Layout Measurements */
     --header-height: 52px;
@@ -352,6 +353,8 @@ body {
     color: var(--text-main);
 }
 
+
+
 .table-wrapper {
     flex: 1;
     overflow-x: auto;
@@ -365,7 +368,8 @@ body {
     text-align: left;
 }
 
-.data-table th {
+
+.data-table thead th {
     position: sticky;
     top: 0;
     background-color: var(--bg-surface);
@@ -375,21 +379,29 @@ body {
     border-bottom: 1px solid var(--border-light);
     z-index: 5;
     white-space: nowrap;
+    text-align: center;
 }
 
-.data-table td {
+.data-table thead th {
     padding: 10px 16px;
     border-bottom: 1px solid var(--border-light);
     color: var(--text-main);
     vertical-align: middle;
     white-space: nowrap;
 }
-
-.data-table tr.group-header {
+.data-table tbody tr td {
+    padding: 5px 7px;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text-main);
+    vertical-align: middle;
+    white-space: nowrap;
+    font-size: var(--font-size-xs);
+}
+.data-table tbody tr.group-header {
     background-color: var(--bg-subtle);
 }
 
-.data-table tr.group-header td {
+.data-table tbody tr.group-header td {
     padding: 6px 16px;
     font-weight: 500;
     border-bottom: 1px solid var(--border-light);
@@ -574,6 +586,14 @@ textarea.form-control {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
+.card-table {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius-lg);
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
 .card-title {
     font-size: 1rem;
     font-weight: 600;
