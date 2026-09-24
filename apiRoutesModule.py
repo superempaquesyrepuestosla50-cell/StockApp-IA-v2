@@ -10,6 +10,48 @@ load_dotenv()
 
 def register_api_routes(app):
     """Registra todas las rutas de la aplicación"""
+    @app.route('/api/demo', methods=['POST'])
+    def demos():
+        uploaded_file = request.files.get('file')
+        data = {
+                "data_invoice": {
+                "factura": {
+                    "fecha_emision": "2026-09-09",
+                    "fecha_vencimiento": "2026-09-09",
+                    "metodo_pago": "Efectivo",
+                    "moneda": "COP",
+                    "numero_factura": "FEAL69528",
+                    "orden_compra": None,
+                    },
+                "proveedor": {
+                    "direccion": "CARRERA 38 #44-79 BARRANQUILLA",
+                    "email": "contabilidad1@alda.com.co",
+                    "nit": "802015914-1",
+                    "nombre": "ALDA Y CIA S.A.S.",
+                    "telefono": "3799854",
+                    },
+                "totales": {
+                    "descuento": 0,
+                    "impuestos": 7983,
+                    "porcentaje_descuento": 0,
+                    "subtotal": 42017,
+                    "total": 50000,
+                    },
+                    },
+                "items": [
+                    {
+                    "cantidad": 1,
+                    "codigo": "NP1147A-85",
+                    "descripcion": "INSTALACION ALTA CIELO/RACER",
+                    "descuento": 0,
+                    "impuesto_porcentaje": 19,
+                    "precio_unitario": 42017,
+                    "total_linea": 42017,
+                    }
+                    ],
+                }
+        return jsonify(filename="data", data = data);
+    
     @app.route('/api/upload', methods=['POST'])
     def upload_invoice():
         uploaded_file = request.files.get('file')
@@ -41,57 +83,15 @@ def register_api_routes(app):
             temporary_path.unlink(missing_ok=True)
 
         return jsonify(filename=original_filename, data=invoice_data), 201
-    @app.route('/api/demo', methods=['POST'])
-    def demos():
-        uploaded_file = request.files.get('file')
-        data = {
-            "data_invoice": {
-            "factura": {
-                "fecha_emision": "2026-09-09",
-                "fecha_vencimiento": "2026-09-09",
-                "metodo_pago": "Efectivo",
-                "moneda": "COP",
-                "numero_factura": "FEAL69528",
-                "orden_compra": None,
-                },
-            "proveedor": {
-                "direccion": "CARRERA 38 #44-79 BARRANQUILLA",
-                "email": "contabilidad1@alda.com.co",
-                "nit": "802015914-1",
-                "nombre": "ALDA Y CIA S.A.S.",
-                "telefono": "3799854",
-                },
-            "totales": {
-                "descuento": 0,
-                "impuestos": 7983,
-                "porcentaje_descuento": 0,
-                "subtotal": 42017,
-                "total": 50000,
-                },
-                },
-            "items": [
-                {
-                "cantidad": 1,
-                "codigo": "NP1147A-85",
-                "descripcion": "INSTALACION ALTA CIELO/RACER",
-                "descuento": 0,
-                "impuesto_porcentaje": 19,
-                "precio_unitario": 42017,
-                "total_linea": 42017,
-                }
-                ],
-            }
-        return jsonify(filename="data", data = data);
-
+    
     @app.route('/api/svd/items/<code>',methods=['GET'])
     def get_items(code):
 
         svd_api_id = os.getenv("_SVD_API_ID")
         svd_applicationAccessKey = os.getenv("_SVD_APPLICATIONACCESSKEY")
 
-        print(svd_api_id)
-
         url = f'https://api.appsheet.com/api/v2/apps/{svd_api_id}/tables/Referencias/Action'
+        
         payload = {
                     "Action": "Find",
                     "Properties": {

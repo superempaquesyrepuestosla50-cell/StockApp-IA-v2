@@ -8,7 +8,7 @@
     <div class="form-container">
         <div class="card">
             <div class="card-title">Cargar Factura</div>
-            <form id="invoice-upload-form" action="{{ url_for('upload_invoice') }}" method="post" enctype="multipart/form-data">
+            <form id="invoice-upload-form" action="{{ url_for('demos') }}" method="post" enctype="multipart/form-data">
                 <div class="form-grid">
                     <div class="form-group">
                         <label class="form-label">Código de Factura <span class="required">*</span></label>
@@ -128,9 +128,13 @@
                         <label class="form-label">Descripción<span class="required">*</span></label>
                         <input type="text" id="modalDescripcion" class="form-control" required>
                     </div>
-                     <div class="form-group">
+                    <div class="form-group">
                         <label class="form-label">Marca<span class="required">*</span></label>
                         <input type="text" id="modalMarca" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Grupo<span class="required">*</span></label>
+                        <input type="text" id="modalGrupo" class="form-control">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Cantidad <span class="required">*</span></label>
@@ -152,7 +156,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                <button type="button" class="btn btn-danger" onclick="closeModal()">Cancelar</button>
+                <button type="submit" class="btn btn-secondary">Consultar</button>
                 <button type="submit" class="btn btn-primary">Guardar Cambios</button>
             </div>
         </form>
@@ -262,6 +267,7 @@
         document.getElementById('modalCode').value = code;
         document.getElementById('modalDescripcion').value = descripcion;
         document.getElementById('modalMarca').value = "";
+        document.getElementById('modalGrupo').value = "";
         document.getElementById('modalCant').value = cant;
         document.getElementById('modalCosto').value = costo;
         document.getElementById('modalValor1').value = 0;
@@ -291,6 +297,7 @@
         const code = document.getElementById('modalCode').value;
         const descripcion = document.getElementById('modalDescripcion').value;
         const marca = document.getElementById('modalMarca').value;
+        const grupo = document.getElementById('modalGrupo').value;
         const cant = parseFloat(document.getElementById('modalCant').value) || 0;
         const costo = parseFloat(document.getElementById('modalCosto').value) || 0;
         const valor1 = parseFloat(document.getElementById('modalValor1').value) || 0;
@@ -318,6 +325,19 @@
         }
 
         closeModal();
+    }
+
+    function searchCodeInTable(code) {
+        const table = document.querySelector('.data-table');
+        const rows = table.querySelectorAll('tbody tr');
+
+        for (const row of rows) {
+            const codeCell = row.cells[1]; // Assuming the code is in the second column (index 1)
+            if (codeCell && codeCell.textContent.trim() === code) {
+                return row; // Return the matching row
+            }
+        }
+        return null; // Return null if not found
     }
 
 </script>
