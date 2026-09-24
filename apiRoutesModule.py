@@ -1,10 +1,12 @@
+import os
 import tempfile
+import requests
 from pathlib import Path
-
 from flask import jsonify, request
 from werkzeug.utils import secure_filename
-
+from dotenv import load_dotenv
 from iaClass import iaClass
+load_dotenv()
 
 def register_api_routes(app):
     """Registra todas las rutas de la aplicación"""
@@ -80,3 +82,35 @@ def register_api_routes(app):
                 ],
             }
         return jsonify(filename="data", data = data);
+
+    @app.route('/api/svd/items/<code>',methods=['GET'])
+    def get_items(code):
+
+        svd_api_id = os.getenv("_SVD_API_ID")
+        svd_applicationAccessKey = os.getenv("_SVD_APPLICATIONACCESSKEY")
+
+        print(svd_api_id)
+
+        url = f'https://api.appsheet.com/api/v2/apps/{svd_api_id}/tables/Referencias/Action'
+        payload = {
+                    "Action": "Find",
+                    "Properties": {
+                        "Locale": "en-US",
+                        "Location": "47.623098, -122.330184",
+                        "Selector": f"Filter(Referencias, [Codigo] = '{code}')",
+                        "Timezone": "Pacific Standard Time",
+                        "UserSettings": {}
+                    },
+                    "Rows": []
+                }
+        headers = {
+        'applicationAccessKey': f'{svd_applicationAccessKey}',
+        'Content-Type': 'application/json'
+        }
+
+        response = requests.post(url, headers=headers, json=payload)
+
+        return jsonify(
+            code = code,
+            data = response.json()
+        ),response.status_code
