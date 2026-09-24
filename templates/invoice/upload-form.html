@@ -8,7 +8,7 @@
     <div class="form-container">
         <div class="card">
             <div class="card-title">Cargar Factura</div>
-            <form id="invoice-upload-form" action="{{ url_for('demos') }}" method="post" enctype="multipart/form-data">
+            <form id="invoice-upload-form" action="{{ url_for('upload_invoice') }}" method="post" enctype="multipart/form-data">
                 <div class="form-grid">
                     <div class="form-group">
                         <label class="form-label">Código de Factura <span class="required">*</span></label>
@@ -60,7 +60,7 @@
             </form>
 
         </div>
-        <div class="card">
+        <div class="card-table">
             <div class="card-title">Items Factura Compra</div>
             <div class="table-wrapper">
                 <table class="data-table">
@@ -68,13 +68,13 @@
                         <tr>
                             <th style="width: 160px;">Id</th>
                             <th style="width: 140px;">Codigo</th>
-                            <th>Descripcion</th>
-                            <th style="text-align: right; width: 180px;">Marca</th>
-                            <th style="text-align: right; width: 180px;">Cant</th>
-                            <th style="text-align: right; width: 180px;">Costo</th>
-                            <th style="text-align: right; width: 180px;">Val 1</th>
-                            <th style="text-align: right; width: 180px;">Val 2</th>
-                            <th style="text-align: right; width: 100px;">Acciones</th>
+                            <th style="width: 200px;">Descripcion</th>
+                            <th style="width: 180px;">Marca</th>
+                            <th style="width: 80px;">Cant</th>
+                            <th style="width: 80px;">Costo</th>
+                            <th style="width: 80px;">Val 1</th>
+                            <th style="width: 80px;">Val 2</th>
+                            <th style="width: 80px;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="body-table-items">
@@ -264,12 +264,12 @@
         document.getElementById('modalMarca').value = "";
         document.getElementById('modalCant').value = cant;
         document.getElementById('modalCosto').value = costo;
+        document.getElementById('modalValor1').value = 0;
+        document.getElementById('modalValor2').value = 0;
         document.getElementById('modalTitle').innerText = 'Editar Venta (' + code + ')';
 
         if (button) {
             activeRowElement = button.parentElement.parentElement
-            console.log(activeRowElement);
-
         }
         document.getElementById('editModal').classList.add('active');
     }
