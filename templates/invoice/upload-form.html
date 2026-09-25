@@ -112,18 +112,9 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Código</label>
-                        <input type="text" id="modalCode" class="form-control" readonly
+                        <input type="text" id="modalCode" class="form-control"
                             style="background-color: var(--bg-subtle);">
                     </div>
-                    <!--
-                    <div class="form-group">
-                        <label class="form-label">Tipo de Pago</label>
-                        <select id="modalType" class="form-control form-select">
-                            <option value="Contado">Contado</option>
-                            <option value="Crédito 30 Días">Crédito 30 Días</option>
-                            <option value="Transferencia / QR">Transferencia / QR</option>
-                        </select>
-                    </div>-->
                     <div class="form-group">
                         <label class="form-label">Descripción<span class="required">*</span></label>
                         <input type="text" id="modalDescripcion" class="form-control" required>
@@ -157,10 +148,11 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" onclick="closeModal()">Cancelar</button>
-                <button type="submit" class="btn btn-secondary">Consultar</button>
+                <button type="submit" class="btn btn-secondary" form="formSearchItems">Consultar</button>
                 <button type="submit" class="btn btn-primary">Guardar Cambios</button>
             </div>
         </form>
+        <form action="{{ url_for('get_items') }}" method="post" id="formSearchItems"></form>
     </div>
 </div>
 
@@ -170,6 +162,7 @@
 <script>
     const uploadForm = document.getElementById('invoice-upload-form');
     const uploadStatus = document.getElementById('upload-status');
+    const searchItems = document.getElementById('formSearchItems');
 
     uploadForm.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -200,6 +193,36 @@
         }
     });
 
+    searchItems.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const submitButton = searchItems.querySelector('button[type="submit"]');
+        //submitButton.disabled = true;
+
+        const code = document.getElementById('modalCode').value
+        const route = `${searchItems.action}/${code}`
+        const formData = new FormData()
+
+        try {
+            const request = await fetch(route, {
+                method: 'post',
+                body: formData
+            })
+
+            const result = await request.json();
+            const statusCode = await request.status;
+            
+            if (statusCode === 200 && result.data.length == 1) {
+                editModal(result.data)
+            }
+
+            console.log(statusCode);
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    })
     function processInvoiceData(data) {
 
         if ("data_invoice" in data) {
@@ -261,9 +284,9 @@
 
         }
     }
-    
+
     function openEditModal(code, descripcion, cant, costo, button) {
-       
+
         document.getElementById('modalCode').value = code;
         document.getElementById('modalDescripcion').value = descripcion;
         document.getElementById('modalMarca').value = "";
@@ -292,7 +315,7 @@
 
     function saveModalData(e) {
         e.preventDefault();
-        
+
         const id = document.getElementById('modalId').value;
         const code = document.getElementById('modalCode').value;
         const descripcion = document.getElementById('modalDescripcion').value;
@@ -320,11 +343,25 @@
                 //    minimumFractionDigits: 2,
                 //    maximumFractionDigits: 2
                 //});
-               // cells[3].innerText = formattedTotal;
+                // cells[3].innerText = formattedTotal;
             }
         }
 
         closeModal();
+    }
+
+    function editModal(data){
+        console.log(data[0])
+        /*
+        document.getElementById('modalCode').value = code;
+        document.getElementById('modalDescripcion').value = descripcion;
+        document.getElementById('modalMarca').value = "";
+        document.getElementById('modalGrupo').value = "";
+        document.getElementById('modalCant').value = cant;
+        document.getElementById('modalCosto').value = costo;
+        document.getElementById('modalValor1').value = 0;
+        document.getElementById('modalValor2').value = 0;
+*/
     }
 
     function searchCodeInTable(code) {

@@ -84,7 +84,8 @@ def register_api_routes(app):
 
         return jsonify(filename=original_filename, data=invoice_data), 201
     
-    @app.route('/api/svd/items/<code>',methods=['GET'])
+    @app.route('/api/svd/items',methods=['POST'])
+    @app.route('/api/svd/items/<code>',methods=['POST'])
     def get_items(code):
 
         svd_api_id = os.getenv("_SVD_API_ID")
