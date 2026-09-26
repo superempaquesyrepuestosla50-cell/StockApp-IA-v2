@@ -8,7 +8,7 @@
     <div class="form-container">
         <div class="card">
             <div class="card-title">Cargar Factura</div>
-            <form id="invoice-upload-form" action="{{ url_for('demos') }}" method="post" enctype="multipart/form-data">
+            <form id="invoice-upload-form" action="{{ url_for('upload_invoice') }}" method="post" enctype="multipart/form-data">
                 <div class="form-grid">
                     <div class="form-group">
                         <label class="form-label">Código de Factura <span class="required">*</span></label>
@@ -70,6 +70,8 @@
                             <th style="width: 140px;">Codigo</th>
                             <th style="width: 200px;">Descripcion</th>
                             <th style="width: 180px;">Marca</th>
+                            <th style="width: 180px;">Grupo</th>
+                            <th style="width: 180px;">Tipo</th>
                             <th style="width: 80px;">Cant</th>
                             <th style="width: 80px;">Costo</th>
                             <th style="width: 80px;">Val 1</th>
@@ -126,6 +128,10 @@
                     <div class="form-group">
                         <label class="form-label">Grupo<span class="required">*</span></label>
                         <input type="text" id="modalGrupo" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tipo<span class="required">*</span></label>
+                        <input type="text" id="modalTipo" class="form-control">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Cantidad <span class="required">*</span></label>
@@ -211,13 +217,11 @@
 
             const result = await request.json();
             const statusCode = await request.status;
-            
+
             if (statusCode === 200 && result.data.length == 1) {
                 editModal(result.data)
             }
-
-            console.log(statusCode);
-
+            
         } catch (error) {
             console.log(error)
         }
@@ -249,6 +253,8 @@
                 colCodigo = document.createElement("td");
                 colDescripcion = document.createElement("td");
                 colMarca = document.createElement("td");
+                colGrupo = document.createElement("td");
+                colTipo = document.createElement("td");
                 colCant = document.createElement("td");
                 colVal1 = document.createElement("td");
                 colVal2 = document.createElement("td");
@@ -267,11 +273,15 @@
                 colDescripcion.textContent = element.descripcion
                 colCant.textContent = element.cantidad
                 colCosto.textContent = element.precio_unitario
+                colGrupo.textContent = ""
+                colTipo.textContent = ""
 
                 row.appendChild(colId);
                 row.appendChild(colCodigo);
                 row.appendChild(colDescripcion);
                 row.appendChild(colMarca);
+                row.appendChild(colGrupo);
+                row.appendChild(colTipo);
                 row.appendChild(colCant);
                 row.appendChild(colCosto);
                 row.appendChild(colVal1);
@@ -291,6 +301,7 @@
         document.getElementById('modalDescripcion').value = descripcion;
         document.getElementById('modalMarca').value = "";
         document.getElementById('modalGrupo').value = "";
+        document.getElementById('modalTipo').value = "";
         document.getElementById('modalCant').value = cant;
         document.getElementById('modalCosto').value = costo;
         document.getElementById('modalValor1').value = 0;
@@ -321,6 +332,7 @@
         const descripcion = document.getElementById('modalDescripcion').value;
         const marca = document.getElementById('modalMarca').value;
         const grupo = document.getElementById('modalGrupo').value;
+        const tipo = document.getElementById('modalTipo').value;
         const cant = parseFloat(document.getElementById('modalCant').value) || 0;
         const costo = parseFloat(document.getElementById('modalCosto').value) || 0;
         const valor1 = parseFloat(document.getElementById('modalValor1').value) || 0;
@@ -333,35 +345,71 @@
                 cells[1].innerText = code;
                 cells[2].innerText = descripcion;
                 cells[3].innerText = marca;
-                cells[4].innerText = cant;
-                cells[5].innerText = costo;
-                cells[6].innerText = valor1;
-                cells[7].innerText = valor2;
-
-                // Formato de moneda para visualización
-                //const formattedTotal = '$ ' + total.toLocaleString('es-CO', {
-                //    minimumFractionDigits: 2,
-                //    maximumFractionDigits: 2
-                //});
-                // cells[3].innerText = formattedTotal;
+                cells[4].innerText = grupo;
+                cells[5].innerText = tipo;
+                cells[6].innerText = cant;
+                cells[7].innerText = costo;
+                cells[8].innerText = valor1;
+                cells[9].innerText = valor2;
             }
         }
 
         closeModal();
     }
 
-    function editModal(data){
-        console.log(data[0])
-        /*
+    function editModal(data) {
+        const code = data[0].Codigo;
+        const descripcion = data[0].Descripcion;
+        const costo = data[0].Costo;
+        const id = data[0].Id;
+        const marca = data[0].Marca;
+        const grupo = data[0].Grupo_Uno;
+        const grupo2 = data[0].Grupo_Dos;
+        const valor1 = data[0].Valor_Min;
+        const valor2 = data[0].Valor_Max;
+        const referencia = data[0].Referencia;
+
+        document.getElementById('modalId').value = id;
         document.getElementById('modalCode').value = code;
         document.getElementById('modalDescripcion').value = descripcion;
-        document.getElementById('modalMarca').value = "";
-        document.getElementById('modalGrupo').value = "";
-        document.getElementById('modalCant').value = cant;
+        document.getElementById('modalMarca').value = marca;
+        document.getElementById('modalGrupo').value = grupo;
+        document.getElementById('modalTipo').value = grupo2;
+        //document.getElementById('modalCant').value = cant;
         document.getElementById('modalCosto').value = costo;
-        document.getElementById('modalValor1').value = 0;
-        document.getElementById('modalValor2').value = 0;
-*/
+        document.getElementById('modalValor1').value = valor1;
+        document.getElementById('modalValor2').value = valor2;
+        /*
+                {
+            "Ajustes": "0",
+            "Cant_Compras": "0",
+            "Cant_Devolucion": "0",
+            "Cant_Ventas": "7",
+            "Codigo": "203161",
+            "Costo": "1000",
+            "Cuenta": "143501",
+            "D_Ticket": "ABRAZADERA 13/32 - 5/08",
+            "Descripcion": "ABRAZADERA 13/32 - 5/08",
+            "Existencias": "-7",
+            "Grupo_Dos": "",
+            "Grupo_Uno": "",
+            "Icon": "",
+            "Id": "58c83aa3",
+            "Iva": "0.19",
+            "Marca": "TITAN",
+            "Max": "0",
+            "Min": "0",
+            "Puesto": "",
+            "Referencia": "203161",
+            "Related Ajustes_Inventarios": "",
+            "Related Referencias_Compras": "",
+            "Related Referencias_Devolucions By Fk_Referencia": "",
+            "Related Referencias_Ventas": "75688378 , 6d7ed4cc , 850f72c4 , 04919f10 , 4463f553",
+            "Valor_Max": "3000",
+            "Valor_Min": "2000",
+            "Vehiculo": "",
+            "_RowNumber": "3"
+        }*/
     }
 
     function searchCodeInTable(code) {

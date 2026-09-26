@@ -41,7 +41,7 @@ def register_api_routes(app):
                 "items": [
                     {
                     "cantidad": 1,
-                    "codigo": "NP1147A-85",
+                    "codigo": "203161",
                     "descripcion": "INSTALACION ALTA CIELO/RACER",
                     "descuento": 0,
                     "impuesto_porcentaje": 19,
@@ -115,3 +115,10 @@ def register_api_routes(app):
             code = code,
             data = response.json()
         ),response.status_code
+
+    @app.route('/api/tools/items/build',methods=['GET'])
+    def build_items():
+        array = request.get_json(force=True)
+        return jsonify(
+            data = array
+        ),200
