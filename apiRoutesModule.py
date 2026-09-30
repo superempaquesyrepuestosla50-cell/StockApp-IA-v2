@@ -118,7 +118,36 @@ def register_api_routes(app):
 
     @app.route('/api/tools/items/build',methods=['GET'])
     def build_items():
+
         array = request.get_json(force=True)
         return jsonify(
             data = array
         ),200
+
+    @app.route('/api/svd/invoice', methods = ['POST'])
+    @app.route('/api/svd/invoice/<number>', methods = ['POST'])
+    def get_invoice(number):        
+        svd_api_id = os.getenv("_SVD_API_ID")
+        svd_applicationAccessKey = os.getenv("_SVD_APPLICATIONACCESSKEY")
+        
+        url = f'https://api.appsheet.com/api/v2/apps/{svd_api_id}/tables/Compras/Action'
+                
+        payload = {
+            "Action": "Find",
+            "Properties": {
+            "Locale": "en-US",
+            "Selector": f"Filter(Compras, [N_Factura] = '{number}')",
+            "UserSettings": {}
+            },
+            "Rows": []
+            }
+        headers = {
+            'applicationAccessKey': f'{svd_applicationAccessKey}',
+            'Content-Type': 'application/json'
+            }
+        response = requests.post(url, headers=headers, json=payload)
+        
+        return jsonify(
+            code = number,
+            data = response.json()
+            ),response.status_code
