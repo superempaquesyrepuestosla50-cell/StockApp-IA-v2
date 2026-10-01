@@ -116,6 +116,28 @@ def register_api_routes(app):
             data = response.json()
         ),response.status_code
 
+    @app.route('/api/svd/items',methods=['POST'])
+    @app.route('/api/svd/items/add',methods=['POST'])
+    def add_items():
+        code = request.form['modalCode']
+        ref = request.form['modalCode']
+        grupo_uno = request.form['modalGrupo']
+        grupo_dos = request.form['modalTipo']
+        marca = request.form['modalMarca']
+        descripcion = request.form['modalDescripcion']
+        costo = request.form['modalCosto']
+        valor_uno = request.form['modalValor1']
+        valor_dos = request.form['modalValor2']
+        proveedor = request.form['proveedor']
+        iva = request.form['iva']
+        stock_min = request.form['modalCant']
+
+
+        return jsonify(
+                    code = code,
+                    data = "response.json()"
+                ),
+
     @app.route('/api/tools/items/build',methods=['GET'])
     def build_items():
 
@@ -146,8 +168,32 @@ def register_api_routes(app):
             'Content-Type': 'application/json'
             }
         response = requests.post(url, headers=headers, json=payload)
-        
+
+
+        if(len(response.json())):
+            return jsonify(
+                    code = number,
+                    data = response.json()
+                    ),response.status_code
+
+        else:
+            return jsonify(
+                        code = number,
+                        data = response.json()
+                        ),response.status_code
+
+    @app.route('/api/svd/invoice/add', methods = ['POST'])
+    def add_invoice():
+
+        nit = request.form['number-invoice']
+        nit = request.form['number-invoice']
+        nit = request.form['number-invoice']
+        nit = request.form['number-invoice']
+        nit = request.form['number-invoice']
+        nit = request.form['number-invoice']
+
+
         return jsonify(
-            code = number,
-            data = response.json()
-            ),response.status_code
+            code = "number",
+            data = nit
+            ),200

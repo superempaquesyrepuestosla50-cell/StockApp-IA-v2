@@ -25,7 +25,7 @@
         </div>
         <div class="card">
             <div class="card-title">Informacion Factura Compra</div>
-            <form onsubmit="event.preventDefault();">
+            <form action="{{ url_for('add_invoice') }}" method="post" id="formSaveInvoice">
                 <div class="form-grid">
                     <div class="form-group">
                         <label class="form-label">ID Factura <span class="required">*</span></label>
@@ -47,8 +47,18 @@
                         <input type="text" class="form-control" value="" name="date-invoice" id="date-invoice" required>
                     </div>
                     <div class=" form-group">
-                        <label class="form-label">Codigo</label>
+                        <label class="form-label">Codigo Proveedor</label>
                         <input type="text" class="form-control" value="" name="code-supplier" id="code-supplier" required>
+                    </div>
+
+                    <div class=" form-group">
+                        <label class="form-label">Nit Proveedor</label>
+                        <input type="text" class="form-control" value="" name="nit-supplier" id="nit-supplier" required>
+                    </div>
+                    
+                     <div class=" form-group">
+                        <label class="form-label">Id Proveedor</label>
+                        <input type="text" class="form-control" value="" name="id-supplier" id="id-supplier" required>
                     </div>
 
                     <div class="form-group full-width">
@@ -76,7 +86,7 @@
 
                 <div class="btn-group">
                     <button type="submit" class="btn btn-secondary" form="formSearchInvoice">Consultar</button>
-                    <button type="submit" class="btn btn-primary">Guardar Registro</button>
+                    <button type="submit" class="btn btn-primary" form="formSaveInvoice">Guardar Registro</button>
                 </div>
             </form>
             <form action="{{ url_for('get_invoice') }}" method="post" id="formSearchInvoice"></form>
@@ -136,20 +146,20 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Código</label>
-                        <input type="text" id="modalCode" class="form-control"
+                        <input type="text" name="modalCode" id="modalCode" class="form-control"
                             style="background-color: var(--bg-subtle);">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Descripción<span class="required">*</span></label>
-                        <input type="text" id="modalDescripcion" class="form-control" required>
+                        <input type="text" name="modalDescripcion" id="modalDescripcion" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Marca<span class="required">*</span></label>
-                        <input type="text" id="modalMarca" class="form-control">
+                        <input type="text" name="modalMarca" id="modalMarca" class="form-control">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Grupo<span class="required">*</span></label>
-                        <input type="text" id="modalGrupo" class="form-control">
+                        <input type="text" name="modalGrupo" id="modalGrupo" class="form-control">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Tipo<span class="required">*</span></label>
@@ -192,6 +202,7 @@
     const uploadStatus = document.getElementById('upload-status');
     const searchItems = document.getElementById('formSearchItems');
     const searchInvoice = document.getElementById('formSearchInvoice');
+    const saveInvoice = document.getElementById('formSaveInvoice');
 
 
     uploadForm.addEventListener('submit', async (event) => {
@@ -287,7 +298,33 @@
         }
 
     })
-        
+    
+    saveInvoice.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData(saveInvoice);
+
+        try {
+            const response = await fetch(saveInvoice.action, {
+                method: 'POST',
+                body: formData,
+            });
+            
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.details || result.error || 'No se pudo cargar la factura.');
+            }
+            //uploadStatus.textContent = `Factura procesada: ${result.filename}`;
+            //processInvoiceData(result.data);
+            console.log(result);
+            saveInvoice.reset();
+        } catch (error) {
+            uploadStatus.textContent = `Error: ${error.message}`;
+        } finally {
+           // submitButton.disabled = false;
+        }    
+    })
+
     /**
      * 
      * 
@@ -302,6 +339,7 @@
             const totales = dataInvoice["totales"];
 
             const nameSupplier = document.getElementById("name-supplier");
+            const nitSupplier = document.getElementById("nit-supplier");
             const dateInvoice = document.getElementById("date-invoice");
             const numberInvoice = document.getElementById("number-invoice");
             const tableItems = document.getElementById("body-table-items");
@@ -312,6 +350,7 @@
             numberInvoice.value = factura["numero_factura"];
             dateInvoice.value = factura["fecha_emision"];
             nameSupplier.value = proveedor["nombre"];
+            nitSupplier.value = proveedor["nit"];
             subTotal.value = totales["subtotal"];
             iva.value = totales["impuestos"];
             total.value = totales["total"];
