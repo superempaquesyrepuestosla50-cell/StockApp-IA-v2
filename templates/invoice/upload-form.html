@@ -8,7 +8,11 @@
     <div class="form-container">
         <div class="card">
             <div class="card-title">Cargar Factura</div>
-            <form id="invoice-upload-form" action="{{ url_for('upload_invoice') }}" method="post"
+            <!-- Product 
+            <form id="invoice-upload-form" action="{{ url_for('upload_invoice') }}" method="post" enctype="multipart/form-data">
+            -->
+            <!-- Debugger --->
+            <form id="invoice-upload-form" action="{{ url_for('demos') }}" method="post"
                 enctype="multipart/form-data">
                 <div class="form-grid">
                     <div class="form-group">
@@ -163,23 +167,23 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Tipo<span class="required">*</span></label>
-                        <input type="text" id="modalTipo" class="form-control">
+                        <input type="text" name="modalTipo" id="modalTipo" class="form-control">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Cantidad <span class="required">*</span></label>
-                        <input type="number" id="modalCant" class="form-control" required>
+                        <input type="number" name="modalCant" id="modalCant" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Costo ($) <span class="required">*</span></label>
-                        <input type="number" id="modalCosto" class="form-control" required>
+                        <input type="number" name="modalCosto" id="modalCosto" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Valor 1 ($) <span class="required">*</span></label>
-                        <input type="number" id="modalValor1" class="form-control" required>
+                        <input type="number" name="modalValor1" id="modalValor1" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Valor 2 ($) <span class="required">*</span></label>
-                        <input type="number" id="modalValor2" class="form-control" required>
+                        <input type="number" name="modalValor2" id="modalValor2" class="form-control" required>
                     </div>
 
                 </div>
@@ -187,10 +191,12 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" onclick="closeModal()">Cancelar</button>
                 <button type="submit" class="btn btn-secondary" form="formSearchItems">Consultar</button>
+                <button type="submit" class="btn btn-secondary" form="formSaveItems">Crear</button>
                 <button type="submit" class="btn btn-primary">Guardar Cambios</button>
             </div>
         </form>
         <form action="{{ url_for('get_items') }}" method="post" id="formSearchItems"></form>
+        <form action="{{ url_for('add_items') }}" method="post" id="formSaveItems"></form>
     </div>
 </div>
 
@@ -201,6 +207,7 @@
     const uploadForm = document.getElementById('invoice-upload-form');
     const uploadStatus = document.getElementById('upload-status');
     const searchItems = document.getElementById('formSearchItems');
+    const seveItems = document.getElementById('formSaveItems');
     const searchInvoice = document.getElementById('formSearchInvoice');
     const saveInvoice = document.getElementById('formSaveInvoice');
 
@@ -233,7 +240,7 @@
             submitButton.disabled = false;
         }
     });
-
+    
     /**
      * 
      */
@@ -258,6 +265,64 @@
 
             if (statusCode === 200 && result.data.length == 1) {
                 editModal(result.data)
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    })
+
+    /**
+     * 
+     */
+    seveItems.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const submitButton = seveItems.querySelector('button[type="submit"]');
+        //submitButton.disabled = true;
+
+        const code = document.getElementById('modalCode').value
+        const ref = document.getElementById('modalCode').value
+        const grupo_uno = document.getElementById('modalGrupo').value
+        const grupo_dos = document.getElementById('modalTipo').value
+        const marca = document.getElementById('modalMarca').value
+        const descripcion = document.getElementById('modalDescripcion').value
+        const costo = document.getElementById('modalCosto').value
+        const valor_uno = document.getElementById('modalValor1').value
+        const valor_dos = document.getElementById('modalValor2').value
+        const proveedor = document.getElementById('id-supplier').value
+        const iva = 19;
+        const stock_min = document.getElementById('modalCant').value
+        
+
+        const route = `${seveItems.action}`
+        const formData = new FormData()
+        formData.append('modalCode',code);
+        formData.append('modalReferencia',ref);
+        formData.append('modalGrupo',grupo_uno);
+        formData.append('modalTipo',grupo_dos);
+        formData.append('modalMarca',marca);
+        formData.append('modalDescripcion',descripcion);
+        formData.append('modalCosto',costo);
+        formData.append('modalValor1',valor_uno);
+        formData.append('modalValor2',valor_dos);
+        formData.append('proveedor',proveedor);
+        formData.append('iva',iva);
+        formData.append('modalCant',stock_min);
+
+        try {
+            const request = await fetch(route, {
+                method: 'post',
+                body: formData
+            })
+
+            const result = await request.json();
+            const statusCode = await request.status;
+
+            if (statusCode === 200 && result.data.length == 1) {
+                editModal(result.data)
+                console.log(result)
             }
 
         } catch (error) {
@@ -298,7 +363,10 @@
         }
 
     })
-    
+   
+    /**
+     * 
+     */
     saveInvoice.addEventListener('submit', async (event) => {
         event.preventDefault();
         const formData = new FormData(saveInvoice);

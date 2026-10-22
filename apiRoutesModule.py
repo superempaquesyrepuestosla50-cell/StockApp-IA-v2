@@ -116,22 +116,21 @@ def register_api_routes(app):
             data = response.json()
         ),response.status_code
 
-    @app.route('/api/svd/items',methods=['POST'])
     @app.route('/api/svd/items/add',methods=['POST'])
     def add_items():
-        code = request.form['modalCode']
-        ref = request.form['modalCode']
-        grupo_uno = request.form['modalGrupo']
-        grupo_dos = request.form['modalTipo']
-        marca = request.form['modalMarca']
-        descripcion = request.form['modalDescripcion']
-        costo = request.form['modalCosto']
-        valor_uno = request.form['modalValor1']
-        valor_dos = request.form['modalValor2']
-        proveedor = request.form['proveedor']
-        iva = request.form['iva']
-        stock_min = request.form['modalCant']
-
+        code = request.body['modalCode']
+        ref = request.body['modalReferencia']
+        grupo_uno = request.body['modalGrupo']
+        grupo_dos = request.body['modalTipo']
+        marca = request.body['modalMarca']
+        descripcion = request.body['modalDescripcion']
+        costo = request.body['modalCosto']
+        valor_uno = request.body['modalValor1']
+        valor_dos = request.body['modalValor2']
+        proveedor = request.body['proveedor']
+        iva = request.body['iva']
+        stock_min = request.body['modalCant']
+        stock_min = request.body['modalCant']
 
         return jsonify(
                     code = code,
